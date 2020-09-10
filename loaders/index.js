@@ -15,7 +15,7 @@ module.exports = ({ sourceMap = false, hmr = false, publicPath }) => ({
     },
 
     cssLoader: {
-        loader: 'css-loader',
+        loader: require.resolve('css-loader'),
         options: {
             sourceMap,
         }
@@ -24,14 +24,15 @@ module.exports = ({ sourceMap = false, hmr = false, publicPath }) => ({
     postCssLoader: {
         loader: require.resolve('postcss-loader'),
         options: {
-            ident: 'postcss',
-            plugins: () => [
-                flexBugs,
-                precss,
-                autoprefixer({
-                    flexbox: 'no-2009'
-                })
-            ]
+            postcssOptions:{
+                plugins: [
+                    flexBugs,
+                    precss,
+                    autoprefixer({
+                        flexbox: 'no-2009'
+                    })
+                ]
+            }
         }
     },
 

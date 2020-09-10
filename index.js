@@ -42,6 +42,9 @@ const baseConfig = {
     },
     resolve: {
         extensions: ['.js', '.json', '.css', '.less'],
+        modules: [
+            'node_modules'
+        ],
         alias: {
             '~': path.resolve(process.cwd(), 'src'),
         },
@@ -68,7 +71,7 @@ const baseConfig = {
             {
                 test: /\.css$/,
                 use: [
-                    'style-loader',
+                    require.resolve('style-loader'),
                     cssExtractLoader,
                     cssLoader,
                     postCssLoader
@@ -77,7 +80,7 @@ const baseConfig = {
             {
                 test: /(?!\.m)..\.less$/,
                 use: [
-                    IS_DEV ? 'style-loader' : cssExtractLoader,
+                    IS_DEV ? require.resolve('style-loader') : cssExtractLoader,
                     cssLoader,
                     postCssLoader,
                     lessLoader
@@ -86,9 +89,9 @@ const baseConfig = {
             {
                 test: /\.m\.less$/,
                 use: [
-                    IS_DEV ? 'style-loader' : cssExtractLoader,
+                    IS_DEV ? require.resolve('style-loader') : cssExtractLoader,
                     {
-                        loader: 'css-loader',
+                        loader: require.resolve('css-loader'),
                         options: {
                             sourceMap: IS_DEV,
                             modules: {
@@ -162,10 +165,7 @@ const baseConfig = {
     },
 
     plugins: [
-        new MiniCssExtractPlugin({
-            filename: '[name].css',
-            chunkFilename: '[id].css',
-        }),
+        new MiniCssExtractPlugin(),
         new webpack.DefinePlugin({
             'process.env.NODE_ENV': JSON.stringify(mode),
             PRODUCTION: JSON.stringify(!IS_DEV),

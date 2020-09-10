@@ -24,7 +24,7 @@ module.exports = ({ sourceMap = false, hmr = false, publicPath }) => ({
     postCssLoader: {
         loader: require.resolve('postcss-loader'),
         options: {
-            postcssOptions:{
+            postcssOptions: {
                 plugins: [
                     flexBugs,
                     precss,
@@ -39,11 +39,13 @@ module.exports = ({ sourceMap = false, hmr = false, publicPath }) => ({
     lessLoader: {
         loader: require.resolve('less-loader'),
         options: {
-            javascriptEnabled: true,
-            sourceMap: true,
-            plugins: [
-                new CleanCSSPlugin({ advanced: true })
-            ]
+            lessOptions: {
+                javascriptEnabled: true,
+                sourceMap,
+                plugins: [
+                    new CleanCSSPlugin({ advanced: true })
+                ]
+            }
         }
     }
 });

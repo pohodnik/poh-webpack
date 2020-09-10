@@ -60,7 +60,7 @@ const baseConfig = {
                 exclude: /node_modules/,
                 use: [
                     {
-                        loader: 'babel-loader',
+                        loader: require.resolve('babel-loader'),
                         options: {
                             babelrc: true,
                             cacheDirectory: true,
@@ -115,7 +115,7 @@ const baseConfig = {
             {
                 test: /\.(ttf|eot|woff|woff2)$/,
                 use: {
-                    loader: 'file-loader',
+                    loader: require.resolve('file-loader'),
                     options: {
                         name: path.join(assetsFolder, 'fonts', '/[name].[ext]'),
                     },
@@ -126,13 +126,13 @@ const baseConfig = {
                 exclude: /\.inline.svg$/,
                 use: [
                     {
-                        loader: 'file-loader',
+                        loader: require.resolve('file-loader'),
                         options: {
                             name: path.join(assetsFolder, 'img', '[name].[ext]'),
                         },
                     },
                     {
-                        loader: 'image-webpack-loader',
+                        loader: require.resolve('image-webpack-loader'),
                         options: {
                             mozjpeg: {
                                 progressive: true,

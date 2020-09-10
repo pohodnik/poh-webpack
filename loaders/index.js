@@ -37,7 +37,7 @@ module.exports = ({ sourceMap = false, hmr = false, publicPath }) => ({
     },
 
     lessLoader: {
-        loader: 'less-loader',
+        loader: require.resolve('less-loader'),
         options: {
             javascriptEnabled: true,
             sourceMap: true,

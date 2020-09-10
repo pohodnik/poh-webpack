@@ -36,6 +36,8 @@
     "file-loader": "^6.1.0",
     "image-webpack-loader": "^6.0.0",
     "incstr": "^1.2.3",
+    "less": "^3.12.2",
+    "less-loader": "^7.0.1",
     "less-plugin-clean-css": "^1.5.1",
     "mini-css-extract-plugin": "^0.11.1",
     "postcss-flexbugs-fixes": "^4.2.1",

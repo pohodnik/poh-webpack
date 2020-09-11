@@ -23,7 +23,7 @@ const assetsFolder = 'prod';
 const IS_DEV = mode === 'development';
 
 const { cssExtractLoader, cssLoader, lessLoader, postCssLoader } = getLoaders({
-    sourceMap: shouldUseSourceMap, hmr: IS_DEV, publicPath
+    sourceMap: shouldUseSourceMap, hmr: IS_DEV
 });
 
 if (argv.verbose) {
@@ -37,8 +37,7 @@ const baseConfig = {
     output: {
         filename: '[name].bundle.js',
         chunkFilename: '[name].[chunkhash].chunk.js',
-        path: path.resolve(process.cwd(), 'dist'),
-        publicPath
+        path: path.resolve(process.cwd(), 'dist')
     },
     resolve: {
         extensions: ['.js', '.json', '.css', '.less'],
@@ -167,8 +166,7 @@ const baseConfig = {
     plugins: [
         new MiniCssExtractPlugin({
             filename: path.join(assetsFolder, 'css', '[name].css'),
-            chunkFilename: path.join(assetsFolder, 'css', '[id].css'),
-            publicPath: IS_DEV ? '' : publicPath
+            chunkFilename: path.join(assetsFolder, 'css', '[id].css')
         }),
         new webpack.DefinePlugin({
             'process.env.NODE_ENV': JSON.stringify(mode),

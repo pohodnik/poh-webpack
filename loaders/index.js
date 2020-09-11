@@ -5,12 +5,11 @@ const flexBugs = require('postcss-flexbugs-fixes');
 const precss = require('precss');
 const autoprefixer = require('autoprefixer');
 
-module.exports = ({ sourceMap = false, hmr = false, publicPath }) => ({
+module.exports = ({ sourceMap = false, hmr = false }) => ({
     cssExtractLoader: {
         loader: MiniCssExtractPlugin.loader,
         options: {
-            hmr,
-            publicPath
+            hmr
         }
     },
 

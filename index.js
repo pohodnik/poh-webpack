@@ -165,7 +165,11 @@ const baseConfig = {
     },
 
     plugins: [
-        new MiniCssExtractPlugin(),
+        new MiniCssExtractPlugin({
+            filename: path.join(assetsFolder, 'css', '[name].css'),
+            chunkFilename: path.join(assetsFolder, 'css', '[id].css'),
+            publicPath: IS_DEV ? '' : publicPath
+        }),
         new webpack.DefinePlugin({
             'process.env.NODE_ENV': JSON.stringify(mode),
             PRODUCTION: JSON.stringify(!IS_DEV),

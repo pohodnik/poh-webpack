@@ -32,7 +32,7 @@ jobs:
       - name: CheckFix
         if: contains('steps.log.outputs.message', 'fix')
         run: echo "FIXXXXX"
-      - name: MINOR
+      - name: ChackMinor
         if: contains(steps.log.outputs.message, 'minor')
         run: echo "Minor"
       - name: Anothers

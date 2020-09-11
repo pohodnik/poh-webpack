@@ -1,4 +1,4 @@
-name: Publish Package
+name: NPM Publish
 
 on:
   release:
@@ -16,9 +16,6 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 12
-      - run: git config --global user.name "Pohodnik"
-      - run: git config --global user.email Pohodnik58@gmail.com
-      - run: npm version patch
 
   publish-npm:
     needs: build
@@ -29,7 +26,9 @@ jobs:
         with:
           node-version: 12
           registry-url: https://registry.npmjs.org/
-          
+      - run: git config --global user.name "Pohodnik"
+      - run: git config --global user.email Pohodnik58@gmail.com
+      - run: npm version patch
       - run: npm config set access public --global
       - run: npm publish
         env:

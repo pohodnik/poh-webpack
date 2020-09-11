@@ -15,6 +15,7 @@ jobs:
       - run: git config --global user.email Pohodnik58@gmail.com
       - run: npm config set access public --global
       - run: npm version patch
+      - run: git push
       - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}

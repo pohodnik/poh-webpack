@@ -1,12 +1,8 @@
 name: NPM Publish
 
 on:
-  release:
-    types: [created]
   push:
     branches: [ master ]
-  pull_request:
-    types: [closed]
 
 jobs:
   build:
@@ -16,28 +12,11 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 12
-
-  publish-npm:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
-        with:
-          node-version: 12
           registry-url: https://registry.npmjs.org/
       - run: git config --global user.name "Pohodnik"
       - run: git config --global user.email Pohodnik58@gmail.com
-      - run: echo "::set-env name=MSG::front_$(git log --no-merges -1 --oneline)"
-      - name: CheckFix
-        if: contains('${{env.MSG}}', 'fix')
-        run: echo 'fix ${{env.MSG}}'
-      - name: ChackMinor
-        if: contains('${{env.MSG}}', 'minor')
-        run: echo "Minor"
-      - name: Anothers
-        run: npm version patch
-        #run: npm config set access public --global
-        #run: npm publish
+      - run: npm version patch
+      - run: npm config set access public --global
+      - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}

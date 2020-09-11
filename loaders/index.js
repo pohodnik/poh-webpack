@@ -4,13 +4,14 @@ const CleanCSSPlugin = require('less-plugin-clean-css');
 const flexBugs = require('postcss-flexbugs-fixes');
 const precss = require('precss');
 const autoprefixer = require('autoprefixer');
+const path = require('path');
 
 module.exports = ({ sourceMap = false, hmr = false, publicPath }) => ({
     cssExtractLoader: {
         loader: MiniCssExtractPlugin.loader,
         options: {
             hmr,
-            publicPath
+            publicPath: path.join(publicPath, 'css')
         }
     },
 

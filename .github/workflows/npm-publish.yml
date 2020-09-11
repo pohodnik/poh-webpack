@@ -1,9 +1,24 @@
 name: NPM Publish
+
 on:
+  release:
+    types: [created]
   push:
     branches: [ master ]
+  pull_request:
+    types: [closed]
+
 jobs:
   build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12
+
+  publish-npm:
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -13,9 +28,8 @@ jobs:
           registry-url: https://registry.npmjs.org/
       - run: git config --global user.name "Pohodnik"
       - run: git config --global user.email Pohodnik58@gmail.com
-      - run: npm config set access public --global
       - run: npm version patch
-      - run: git push
+      - run: npm config set access public --global
       - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}

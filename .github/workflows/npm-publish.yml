@@ -30,10 +30,10 @@ jobs:
       - run: git config --global user.email Pohodnik58@gmail.com
       - run: echo "::set-output name=message::$(git log --no-merges -1 --oneline)"
       - name: CheckFix
-        if: contains('steps.log.outputs.message', 'fix')
+        if: contains(${{steps.log.outputs.message}}, 'fix')
         run: echo "FIXXXXX"
       - name: ChackMinor
-        if: contains(steps.log.outputs.message, 'minor')
+        if: contains(${{steps.log.outputs.message}}, 'minor')
         run: echo "Minor"
       - name: Anothers
         run: npm version patch

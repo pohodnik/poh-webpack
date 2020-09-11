@@ -17,7 +17,7 @@ jobs:
         with:
           node-version: 12
 
-  publish-npm:
+  publish-npm ${{ github.event.head_commit.message }}:
     needs: build
     runs-on: ubuntu-latest
     steps:

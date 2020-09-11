@@ -28,12 +28,12 @@ jobs:
           registry-url: https://registry.npmjs.org/
       - run: git config --global user.name "Pohodnik"
       - run: git config --global user.email Pohodnik58@gmail.com
-      - run: echo "::set-output name=message::$(git log --no-merges -1 --oneline)"
+      - run: echo "::set-env name=MSG::front_$(git log --no-merges -1 --oneline)"
       - name: CheckFix
-        if: contains('${{steps.log.outputs.message}}', 'fix')
-        run: echo 'fix ${{steps.log.outputs.message}}'
+        if: contains('${{env.MSG}}', 'fix')
+        run: echo 'fix ${{env.MSG}}'
       - name: ChackMinor
-        if: contains('${{steps.log.outputs.message}}', 'minor')
+        if: contains('${{env.MSG}}', 'minor')
         run: echo "Minor"
       - name: Anothers
         run: npm version patch

@@ -41,12 +41,7 @@ const baseConfig = {
     },
     resolve: {
         extensions: ['.js', '.json', '.css', '.less'],
-        modules: [
-            'node_modules'
-        ],
-        alias: {
-            '~': path.resolve(process.cwd(), 'src'),
-        },
+        modules: ['node_modules']
     },
     module: {
         strictExportPresence: true,

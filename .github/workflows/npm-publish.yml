@@ -13,23 +13,48 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
-        with:
-          node-version: 12
 
-  publish-npm:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
-        with:
-          node-version: 12
-          registry-url: https://registry.npmjs.org/
-      - run: git config --global user.name "Pohodnik"
-      - run: git config --global user.email Pohodnik58@gmail.com
-      - run: npm version patch && npm version patch && git push
-      - run: npm config set access public --global
-      - run: npm publish
+      - name: Set git user for commit new version
+        run: |
+          git config --global user.name "Pohodnik NPM Publisher"
+          git config --global user.email pohodnik58@gmail.com
+
+      - name: Check if patch version
+        if: contains( github.event.head_commit.message, 'patch' )
+        run: echo "NEWVER=$(npm version patch)" >> $GITHUB_ENV
+
+      - name: Check if minor version
+        if: contains( github.event.head_commit.message, 'minor' )
+        run: echo "NEWVER=$(npm version minor)" >> $GITHUB_ENV
+
+      - name: Check if major version
+        if: contains( github.event.head_commit.message, 'major' )
+        run: echo "NEWVER=$(npm version major)" >> $GITHUB_ENV
+
+      - name: Check if fallback patch version
+        if: |
+          !contains(github.event.head_commit.message, 'major') &&
+          !contains(github.event.head_commit.message, 'minor') &&
+          !contains(github.event.head_commit.message, 'patch')
+        run: echo "NEWVER=$(npm version patch)" >> $GITHUB_ENV
+
+      - name: Final version type
+        run: echo $NEWVER
+
+      - name: Pushing new version to git
+        run: git push && git push --tags
+
+      - name: Prepare NPM
+        run: echo "//registry.npmjs.org/:_authToken=${{secrets.NPM_TOKEN}}" >> ./.npmrc
+
+      - name: Publish npm package
+        run: npm publish --access public
+
+      - name: Send telegramm notofication
+        run: curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage -d chat_id=${{ secrets.TELEGRAM_TO }} -d parse_mode=html -d text="$MESSAGE" >> /dev/null
         env:
-          NODE_AUTH_TOKEN: ${{secrets.npm_token}}
+          MESSAGE: |
+            <b>webpack-config</b> ${{ env.NEWVER }} ready!
+            <code>yarn upgrade @pohodnik/webpack-config --latest</code>
+            <i>${{ github.event.head_commit.message }}</i>
+            ${{ github.actor }}

@@ -1,4 +1,4 @@
-const { argv } = require('yargs');
+const yargs = require('yargs/yargs');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const path = require('path');
 const webpack = require('webpack');
@@ -6,6 +6,8 @@ const { merge } = require('webpack-merge');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const cssClassUnique = require('./utils/cssClassUniqueSmall');
 const getLoaders = require('./loaders');
+
+const argv = yargs(process.argv).argv || {};
 
 let mode = 'production';
 if (process.env.NODE_ENV) {
@@ -29,7 +31,7 @@ const { cssExtractLoader, cssLoader, lessLoader, postCssLoader } = getLoaders({
 if (argv.verbose) {
     console.log('Working directory:', process.cwd());
     console.log('Public Path:', publicPath);
-    console.log('Mode:', mode);
+    console.log('Current mode:', mode);
 }
 
 const baseConfig = {
@@ -37,10 +39,10 @@ const baseConfig = {
     output: {
         filename: '[name].bundle.js',
         chunkFilename: '[name].[chunkhash].chunk.js',
-        path: path.resolve(process.cwd(), 'dist')
+        path: path.resolve(__dirname, './dist')
     },
     resolve: {
-        extensions: ['.js', '.json', '.css', '.less'],
+        extensions: ['.ts', '.tsx', '.js', '.json', '.css', '.less'],
         modules: [
             'node_modules'
         ]
@@ -52,7 +54,7 @@ const baseConfig = {
                 parser: { requireEnsure: false },
             },
             {
-                test: /\.(js)$/,
+                test: /\.js(x?)$/,
                 exclude: /node_modules/,
                 use: [
                     {
@@ -65,16 +67,33 @@ const baseConfig = {
                 ],
             },
             {
+                test: /\.ts(x?)$/,
+                exclude: /node_modules/,
+                use: [
+                    {
+                        loader: require.resolve('babel-loader'),
+                        options: {
+                            babelrc: true,
+                            cacheDirectory: true,
+                        },
+                    },
+                    {
+                        loader: require.resolve('ts-loader')
+                    }
+                ]
+            },
+            {
                 test: /\.css$/,
                 use: [
-                    require.resolve('style-loader'),
-                    cssExtractLoader,
+                    IS_DEV ? require.resolve('style-loader') : cssExtractLoader,
                     cssLoader,
                     postCssLoader
                 ]
             },
             {
-                test: /(?!\.m)..\.less$/,
+                // just less
+                test: /\.less$/,
+                exclude: /\.m\.less$/,
                 use: [
                     IS_DEV ? require.resolve('style-loader') : cssExtractLoader,
                     cssLoader,
@@ -83,6 +102,7 @@ const baseConfig = {
                 ]
             },
             {
+                // CSS modules
                 test: /\.m\.less$/,
                 use: [
                     IS_DEV ? require.resolve('style-loader') : cssExtractLoader,
@@ -92,13 +112,10 @@ const baseConfig = {
                             sourceMap: IS_DEV,
                             modules: {
                                 mode: 'local',
-                                ...(IS_DEV ? {
-                                    localIdentName: '[path]_[name]_[local]--[hash:base64:3]',
-                                } : {
-                                    getLocalIdent: (context, localIdentName, localName) => (
-                                        cssClassUnique(localName, context.resourcePath)
-                                    )
-                                }
+                                ...(
+                                    IS_DEV
+                                    ? { localIdentName: '[path]_[name]_[local]--[hash:base64:3]' }
+                                    : { getLocalIdent: (context, localIdentName, localName) => cssClassUnique(localName, context.resourcePath) }
                                 )
                             },
                             importLoaders: 2
@@ -124,7 +141,7 @@ const baseConfig = {
                     {
                         loader: require.resolve('file-loader'),
                         options: {
-                            name: path.join(assetsFolder, 'img', '[name].[ext]'),
+                            name: path.join(assetsFolder, 'img', '/[name].[ext]').split(path.sep).join(path.posix.sep)
                         },
                     },
                     {
@@ -203,7 +220,7 @@ if (mode === 'production') {
     }));
 }
 
-const mergeConfig = (a, b) => merge(a, (typeof b === 'function') ? b({ mode, legacyBack: false }) : b);
+const mergeConfig = (a, b) => merge(a, (typeof b === 'function') ? b({ mode, legacyBack: false, ...argv }) : b);
 
 const createConfig = userConfig => mergeConfig(baseConfig, userConfig);
 

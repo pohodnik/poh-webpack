@@ -22,21 +22,21 @@ jobs:
       - name: Check if minor version ${{ github.event.head_commit.message }}
         if: |
           contains(github.event.head_commit.message, 'minor' )
-        run: echo "NEWVER=$(npm version minor)" >> $GITHUB_ENV && git tag -a $NEWVER -m"${{github.event.head_commit.message}}"
+        run: echo "NEWVER=$(npm version minor)" >> $GITHUB_ENV && git tag -a ${{ env.NEWVER }} -m"${{github.event.head_commit.message}}"
 
       - name: Check if major version ${{ github.event.head_commit.message }}
         if: |
           contains(github.event.head_commit.message, 'major' )
-        run: echo "NEWVER=$(npm version major)" >> $GITHUB_ENV && git tag -a $NEWVER -m"${{github.event.head_commit.message}}"
+        run: echo "NEWVER=$(npm version major)" >> $GITHUB_ENV && git tag -a ${{ env.NEWVER }} -m"${{github.event.head_commit.message}}"
 
       - name: Check if fallback patch version  ${{ github.event.head_commit.message }}
         if: |
           !contains(github.event.head_commit.message, 'major') &&
           !contains(github.event.head_commit.message, 'minor')
-        run: echo "NEWVER=$(npm version patch)" >> $GITHUB_ENV && git tag -a $NEWVER
+        run: echo "NEWVER=$(npm version patch)" >> $GITHUB_ENV && git tag -a ${{ env.NEWVER }}
 
-      - name: Final version type
-        run: echo $NEWVER
+      - name: Final version type ${{ env.NEWVER }}
+        run: echo ${{ env.NEWVER }}
 
       - name: Pushing new version to git
         run: git push && git push --tags

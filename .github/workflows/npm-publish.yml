@@ -35,27 +35,13 @@ jobs:
           !contains(github.event.head_commit.message, 'minor')
         run: echo "NEWVER=$(npm version patch)" >> $GITHUB_ENV
 
-      - name: Add tag ${{ env.NEWVER }} if minor version ${{ github.event.head_commit.message }}
-        if: |
-          contains(github.event.head_commit.message, 'minor')
-        run: git tag -a ${{ env.NEWVER }} -m"${{github.event.head_commit.message}}"
-
-      - name: Add tag ${{ env.NEWVER }} if major version ${{ github.event.head_commit.message }}
-        if: |
-          contains(github.event.head_commit.message, 'major' )
-        run: git tag -a ${{ env.NEWVER }} -m"${{github.event.head_commit.message}}"
-
-      - name: Add tag ${{ env.NEWVER }} if fallback patch version  ${{ github.event.head_commit.message }}
-        if: |
-          !contains(github.event.head_commit.message, 'major') &&
-          !contains(github.event.head_commit.message, 'minor')
-        run: git tag -a ${{ env.NEWVER }}
-
       - name: Final version type ${{ env.NEWVER }}
         run: echo ${{ env.NEWVER }}
 
       - name: Pushing new version to git
-        run: git push && git push --tags
+        run: |
+          git push
+          git push --tags
 
       - name: Prepare NPM
         run: echo "//registry.npmjs.org/:_authToken=${{secrets.NPM_TOKEN}}" >> ./.npmrc

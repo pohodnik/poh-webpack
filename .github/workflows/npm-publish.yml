@@ -19,23 +19,20 @@ jobs:
           git config --global user.name "Pohodnik NPM Publisher"
           git config --global user.email pohodnik58@gmail.com
 
-      - name: Check if patch version
-        if: contains( github.event.head_commit.message, 'patch' )
-        run: echo "NEWVER=$(npm version patch)" >> $GITHUB_ENV
-
-      - name: Check if minor version
-        if: contains( github.event.head_commit.message, 'minor' )
+      - name: Check if minor version ${{ github.event.head_commit.message }}
+        if: |
+          contains(github.event.head_commit.message, 'minor' )
         run: echo "NEWVER=$(npm version minor)" >> $GITHUB_ENV
 
-      - name: Check if major version
-        if: contains( github.event.head_commit.message, 'major' )
+      - name: Check if major version ${{ github.event.head_commit.message }}
+        if: |
+          contains(github.event.head_commit.message, 'major' )
         run: echo "NEWVER=$(npm version major)" >> $GITHUB_ENV
 
-      - name: Check if fallback patch version
+      - name: Check if fallback patch version  ${{ github.event.head_commit.message }}
         if: |
           !contains(github.event.head_commit.message, 'major') &&
-          !contains(github.event.head_commit.message, 'minor') &&
-          !contains(github.event.head_commit.message, 'patch')
+          !contains(github.event.head_commit.message, 'minor')
         run: echo "NEWVER=$(npm version patch)" >> $GITHUB_ENV
 
       - name: Final version type

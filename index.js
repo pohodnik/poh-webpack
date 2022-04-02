@@ -208,7 +208,7 @@ if (mode === 'development') {
     baseConfig.devtool = 'cheap-module-source-map';
 
     // Add module names to factory functions so they appear in browser profiler.
-    baseConfig.plugins.push(new webpack.NamedModulesPlugin());
+    baseConfig.optimization.moduleIds = 'named';
 }
 
 if (mode === 'production') {

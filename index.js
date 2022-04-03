@@ -1,25 +1,13 @@
-const yargs = require('yargs/yargs');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const path = require('path');
 const webpack = require('webpack');
 const { merge } = require('webpack-merge');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
-const cssClassUnique = require('./utils/cssClassUniqueSmall');
 const getLoaders = require('./loaders');
 
-const argv = yargs(process.argv).argv || {};
-
-let mode = 'production';
-if (process.env.NODE_ENV) {
-    mode = process.env.NODE_ENV;
-} else if (argv.mode) {
-    mode = argv.mode;
-} else if (process.env.WEBPACK_SERVE) {
-    mode = 'development';
-}
+const mode = process.env.NODE_ENV ?? 'production';
 
 const shouldUseSourceMap = process.env.sourceMap === 'true';
-const publicPath = process.env.publicPath || '/dist/';
 const assetsFolder = 'prod';
 
 const IS_DEV = mode === 'development';
@@ -27,12 +15,6 @@ const IS_DEV = mode === 'development';
 const { cssExtractLoader, cssLoader, lessLoader, postCssLoader } = getLoaders({
     sourceMap: shouldUseSourceMap, hmr: IS_DEV
 });
-
-if (argv.verbose) {
-    console.log('Working directory:', process.cwd());
-    console.log('Public Path:', publicPath);
-    console.log('Current mode:', mode);
-}
 
 const baseConfig = {
     mode,
@@ -114,8 +96,8 @@ const baseConfig = {
                                 mode: 'local',
                                 ...(
                                     IS_DEV
-                                    ? { localIdentName: '[path]_[name]_[local]--[hash:base64:3]' }
-                                    : { getLocalIdent: (context, localIdentName, localName) => cssClassUnique(localName, context.resourcePath) }
+                                        ? { localIdentName: '[path]_[name]_[local]--[hash:base64:3]' }
+                                        : { localIdentName: '[path]_[name]_[local]--[hash:base64:6]' }
                                 )
                             },
                             importLoaders: 2
@@ -223,7 +205,7 @@ if (mode === 'production') {
     }));
 }
 
-const mergeConfig = (a, b) => merge(a, (typeof b === 'function') ? b({ mode, legacyBack: false, ...argv }) : b);
+const mergeConfig = (a, b) => merge(a, (typeof b === 'function') ? b({ mode, legacyBack: false }) : b);
 
 const createConfig = userConfig => mergeConfig(baseConfig, userConfig);
 

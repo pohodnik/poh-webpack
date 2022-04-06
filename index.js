@@ -109,47 +109,20 @@ const baseConfig = {
             },
             {
                 test: /\.(ttf|eot|woff|woff2)$/,
-                use: {
-                    loader: require.resolve('file-loader'),
-                    options: {
-                        name: path.join(assetsFolder, 'fonts', '/[name].[ext]'),
-                    },
+                type: 'asset/resource',
+                options: {
+                    name: path.join(assetsFolder, 'fonts', '/[name].[ext]'),
                 },
             },
             {
                 test: /\.(gif|png|jpe?g|(?!inline\.)svg)$/i,
                 exclude: /\.inline.svg$/,
-                use: [
-                    {
-                        loader: require.resolve('file-loader'),
+                type: 'asset/resource',
+
                         options: {
                             name: path.join(assetsFolder, 'img', '/[name].[ext]').split(path.sep).join(path.posix.sep)
                         },
-                    },
-                    {
-                        loader: require.resolve('image-webpack-loader'),
-                        options: {
-                            mozjpeg: {
-                                progressive: true,
-                                quality: 65
-                            },
-                            optipng: {
-                                enabled: true,
-                            },
-                            pngquant: {
-                                quality: [0.65, 0.90],
-                                speed: 4
-                            },
-                            gifsicle: {
-                                interlaced: false,
-                            },
-                            // the webp option will enable WEBP
-                            webp: {
-                                quality: 75
-                            }
-                        }
-                    },
-                ],
+
             },
             {
                 test: /\.inline.svg$/,

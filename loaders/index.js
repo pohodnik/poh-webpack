@@ -1,11 +1,8 @@
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
-module.exports = ({ sourceMap = false, hmr = false }) => ({
+module.exports = ({ sourceMap = false }) => ({
     cssExtractLoader: {
-        loader: MiniCssExtractPlugin.loader,
-        options: {
-            hmr
-        }
+        loader: MiniCssExtractPlugin.loader
     },
 
     cssLoader: {
@@ -25,7 +22,6 @@ module.exports = ({ sourceMap = false, hmr = false }) => ({
     lessLoader: {
         loader: require.resolve('less-loader'),
         options: {
-            javascriptEnabled: true,
             sourceMap
         }
     }

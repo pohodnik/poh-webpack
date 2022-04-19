@@ -5,15 +5,15 @@ const { merge } = require('webpack-merge');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const getLoaders = require('./loaders');
 
-const mode = process.env.NODE_ENV ?? 'production';
+const mode = process?.env?.NODE_ENV ?? 'production';
 
-const shouldUseSourceMap = process.env.sourceMap === 'true';
+const shouldUseSourceMap = process?.env?.sourceMap === 'true';
 const assetsFolder = 'prod';
 
 const IS_DEV = mode === 'development';
 
 const { cssExtractLoader, cssLoader, lessLoader, postCssLoader } = getLoaders({
-    sourceMap: shouldUseSourceMap, hmr: IS_DEV
+    sourceMap: shouldUseSourceMap
 });
 
 const baseConfig = {
@@ -110,22 +110,19 @@ const baseConfig = {
             {
                 test: /\.(ttf|eot|woff|woff2)$/,
                 type: 'asset/resource',
-                options: {
-                    name: path.join(assetsFolder, 'fonts', '/[name].[ext]'),
+                generator: {
+                    filename: path.join(assetsFolder, 'fonts', '/[name].[ext]')
                 },
             },
             {
                 test: /\.(gif|png|jpe?g|(?!inline\.)svg)$/i,
-                exclude: /\.inline.svg$/,
                 type: 'asset/resource',
-
-                        options: {
-                            name: path.join(assetsFolder, 'img', '/[name].[ext]').split(path.sep).join(path.posix.sep)
-                        },
-
+                generator: {
+                    filename: path.join(assetsFolder, 'img', '/[name][hash].[ext]').split(path.sep).join(path.posix.sep)
+                },
             },
             {
-                test: /\.inline.svg$/,
+                test: /\.inline\.svg$/,
                 use: '@svgr/webpack',
             },
 
@@ -138,9 +135,8 @@ const baseConfig = {
             chunkFilename: path.join(assetsFolder, 'css', '[id].css')
         }),
         new webpack.DefinePlugin({
-            'process.env.NODE_ENV': JSON.stringify(mode),
             PRODUCTION: JSON.stringify(!IS_DEV),
-            NODE_ENV: JSON.stringify(process.env.NODE_ENV)
+            NODE_ENV: JSON.stringify(process?.env?.NODE_ENV)
         }),
     ]
 };

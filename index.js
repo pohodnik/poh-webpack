@@ -116,13 +116,14 @@ const baseConfig = {
             },
             {
                 test: /\.(gif|png|jpe?g|(?!inline\.)svg)$/i,
+                exclude: [/\.inline.svg$/],
                 type: 'asset/resource',
                 generator: {
-                    filename: path.join(assetsFolder, 'img', '/[name][hash].[ext]').split(path.sep).join(path.posix.sep)
+                    filename: path.join(assetsFolder, 'img', '/[name]_[hash:base64:3].[ext]').split(path.sep).join(path.posix.sep)
                 },
             },
             {
-                test: /\.inline\.svg$/,
+                test: /\.inline.svg$/,
                 use: '@svgr/webpack',
             },
 
